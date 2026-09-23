@@ -1,0 +1,33 @@
+name: "🛠 Jarvis: Fix a specific issue or PR"
+description: "Ask Jarvis to fix one specific issue or unblock a failing PR"
+title: "[jarvis-trigger] fix: "
+labels: ["jarvis-trigger", "fix"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repo
+      description: "Format: owner/repo"
+      placeholder: "mansigidugu/coursify"
+    validations:
+      required: true
+  - type: input
+    id: number
+    attributes:
+      label: Issue or PR number
+      placeholder: "42"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - issue
+        - pr
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)

@@ -1,0 +1,18 @@
+name: "🔍 Jarvis: Scan a repo now"
+description: "Ask Jarvis to scan a repo immediately for fixable issues/failing PRs"
+title: "[jarvis-trigger] scan: "
+labels: ["jarvis-trigger", "scan"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repo to scan
+      description: "Format: owner/repo, e.g. mansigidugu/coursify"
+      placeholder: "mansigidugu/coursify"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: "Anything specific Jarvis should focus on or avoid"
