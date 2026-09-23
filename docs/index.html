@@ -7,21 +7,32 @@
 <style>
   :root {
     --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9;
-    --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+    --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #a371f7;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    padding: 24px; max-width: 760px; margin: 0 auto;
+    padding: 24px; max-width: 820px; margin: 0 auto;
   }
   header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
   header h1 { font-size: 22px; margin: 0; }
   .badge { font-size: 12px; padding: 3px 8px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
   .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-  .links { display: flex; gap: 14px; margin-bottom: 24px; font-size: 13px; }
+  .links { display: flex; gap: 14px; margin-bottom: 20px; font-size: 13px; }
   .links a { color: var(--muted); text-decoration: none; }
   .links a:hover { color: var(--accent); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 9px 16px; font-size: 13.5px; color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent; user-select: none;
+  }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab .count { color: var(--muted); font-size: 11px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
 
   /* Chat composer */
   .composer {
@@ -41,7 +52,6 @@
     padding: 9px 18px; border-radius: 6px; font-size: 14px; cursor: pointer;
   }
   .send-btn:hover { filter: brightness(1.1); }
-  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
   .chip {
     background: #0d1117; border: 1px solid var(--border); color: var(--muted);
@@ -63,10 +73,12 @@
   }
   .thread-head a { color: var(--text); text-decoration: none; font-weight: 500; }
   .thread-head a:hover { color: var(--accent); }
-  .status-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  .status-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
   .status-open { background: rgba(210,153,34,0.15); color: var(--yellow); }
   .status-progress { background: rgba(88,166,255,0.15); color: var(--accent); }
   .status-done { background: rgba(63,185,80,0.15); color: var(--green); }
+  .status-fail { background: rgba(248,81,73,0.15); color: var(--red); }
+  .status-unknown { background: rgba(139,148,158,0.15); color: var(--muted); }
   .msgs { padding: 10px 14px; display: flex; flex-direction: column; gap: 10px; }
   .msg { max-width: 88%; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; }
   .msg.user { align-self: flex-end; background: #1f6feb33; border: 1px solid #1f6feb55; }
@@ -76,6 +88,39 @@
   .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
   footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 36px; }
   #error { color: var(--red); font-size: 13px; margin-bottom: 10px; }
+
+  /* Repo cards */
+  .repo-grid { display: flex; flex-direction: column; gap: 10px; }
+  .repo-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; cursor: pointer; transition: border-color 0.15s;
+  }
+  .repo-card:hover { border-color: var(--accent); }
+  .repo-card-top { display: flex; justify-content: space-between; align-items: center; }
+  .repo-name { font-weight: 600; font-size: 14.5px; }
+  .repo-name a { color: var(--text); text-decoration: none; }
+  .repo-name a:hover { color: var(--accent); }
+  .repo-stats { display: flex; gap: 14px; margin-top: 8px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .repo-stats span { display: flex; align-items: center; gap: 4px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .dot.green { background: var(--green); }
+  .dot.red { background: var(--red); }
+  .dot.yellow { background: var(--yellow); }
+  .dot.gray { background: var(--muted); }
+  .repo-detail {
+    display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+    font-size: 12.5px; color: var(--muted);
+  }
+  .repo-card.expanded .repo-detail { display: block; }
+  .repo-detail-row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .repo-detail a { color: var(--accent); text-decoration: none; }
+  .repo-actions { margin-top: 10px; display: flex; gap: 8px; }
+  .mini-btn {
+    background: #0d1117; border: 1px solid var(--border); color: var(--text);
+    font-size: 12px; padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .mini-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .lang-tag { font-size: 11px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -91,11 +136,7 @@
 </div>
 
 <div class="composer">
-  <div class="quick-chips">
-    <span class="chip" data-t="Scan my-portfolio for any bugs or broken links">Scan my-portfolio</span>
-    <span class="chip" data-t="Scan coursify for any bugs or broken code">Scan coursify</span>
-    <span class="chip" data-t="Scan ccaf-day1 for any bugs">Scan ccaf-day1</span>
-  </div>
+  <div class="quick-chips" id="quickChips"></div>
   <textarea id="msg" placeholder="e.g. &quot;Fix the broken build in coursify&quot; or &quot;scan my-portfolio for issues&quot;"></textarea>
   <div class="composer-row">
     <span class="composer-hint">Opens a pre-filled GitHub issue in a new tab — click "Submit new issue" there to send it.</span>
@@ -105,24 +146,33 @@
 
 <div id="error"></div>
 
-<section>
-  <h2>Conversations</h2>
+<div class="tabs">
+  <div class="tab active" data-panel="chatPanel">Conversations <span class="count" id="chatCount"></span></div>
+  <div class="tab" data-panel="reposPanel">Repo Status <span class="count" id="repoCount"></span></div>
+</div>
+
+<div class="panel active" id="chatPanel">
   <div id="threads" class="empty">Loading…</div>
-</section>
+</div>
+
+<div class="panel" id="reposPanel">
+  <div id="repos" class="empty">Loading…</div>
+</div>
 
 <footer>
-  jarvis-control · reads refresh automatically · replies happen as comments on the GitHub issue (checked every ~10 min)
+  jarvis-control · auto-refreshes every 30s · replies land as issue comments (watcher checks every ~10 min)
 </footer>
 
 <script>
 const OWNER = "mansigidugu";
 const REPO = "jarvis-control";
-const api = (path) => fetch(`https://api.github.com/repos/${OWNER}/${REPO}${path}`).then(r => {
+const gh = (path) => fetch(`https://api.github.com${path}`).then(r => {
   if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
   return r.json();
 });
 const esc = (s) => (s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const timeAgo = (iso) => {
+  if (!iso) return "n/a";
   const s = Math.floor((Date.now() - new Date(iso)) / 1000);
   if (s < 60) return `${s}s ago`;
   if (s < 3600) return `${Math.floor(s/60)}m ago`;
@@ -130,51 +180,58 @@ const timeAgo = (iso) => {
   return `${Math.floor(s/86400)}d ago`;
 };
 
+// ---- Tabs ----
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.panel).classList.add("active");
+  });
+});
+
+// ---- Chat composer ----
 function sendMessage(text) {
   if (!text.trim()) return;
   const url = `https://github.com/${OWNER}/${REPO}/issues/new?template=chat.yml&title=${encodeURIComponent("[jarvis-chat] " + text.slice(0, 60))}&message=${encodeURIComponent(text)}`;
   window.open(url, "_blank");
 }
-
 document.getElementById("sendBtn").addEventListener("click", () => {
   const el = document.getElementById("msg");
   sendMessage(el.value);
   el.value = "";
 });
-document.querySelectorAll(".chip").forEach(chip => {
-  chip.addEventListener("click", () => sendMessage(chip.dataset.t));
-});
 document.getElementById("msg").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) document.getElementById("sendBtn").click();
 });
 
+// ---- Conversations ----
 async function loadThreads() {
   const el = document.getElementById("threads");
   try {
     const [openChats, closedChats] = await Promise.all([
-      api(`/issues?labels=chat&state=open&per_page=20&sort=updated`),
-      api(`/issues?labels=chat&state=closed&per_page=10&sort=updated`)
+      gh(`/repos/${OWNER}/${REPO}/issues?labels=jarvis-trigger&state=open&per_page=20&sort=updated`),
+      gh(`/repos/${OWNER}/${REPO}/issues?labels=jarvis-trigger&state=closed&per_page=10&sort=updated`)
     ]);
-    const all = [...openChats, ...closedChats];
+    const all = [...openChats, ...closedChats].filter(i => !i.pull_request);
+    document.getElementById("chatCount").textContent = all.length ? `(${all.length})` : "";
     if (!all.length) {
       el.className = "empty";
       el.textContent = "No conversations yet — send Jarvis a message above.";
       return;
     }
     const withComments = await Promise.all(all.map(async (issue) => {
-      const comments = issue.comments > 0
-        ? await fetch(issue.comments_url).then(r => r.json())
-        : [];
+      const comments = issue.comments > 0 ? await fetch(issue.comments_url).then(r => r.json()) : [];
       return { issue, comments };
     }));
 
     el.className = "";
     el.innerHTML = withComments.map(({ issue, comments }) => {
       const inProgress = issue.labels.some(l => l.name === "jarvis-in-progress");
-      const done = issue.state === "closed" || issue.labels.some(l => l.name === "jarvis-done");
+      const done = issue.labels.some(l => l.name === "jarvis-done");
       const statusClass = done ? "status-done" : (inProgress ? "status-progress" : "status-open");
-      const statusText = done ? "done" : (inProgress ? "working…" : "queued");
-      const userMsg = issue.body?.replace(/^### Message\s*/i, "").trim() || issue.title;
+      const statusText = done ? "answered" : (inProgress ? "working…" : "queued");
+      const userMsg = issue.body?.replace(/^### Message\s*/i, "").replace(/^###.*Repo to scan\s*/i, "scan: ").trim() || issue.title;
       const msgs = [`<div class="msg user"><div class="who">you · ${timeAgo(issue.created_at)}</div>${esc(userMsg)}</div>`];
       comments.forEach(c => {
         msgs.push(`<div class="msg jarvis"><div class="who">🤖 jarvis · ${timeAgo(c.created_at)}</div>${esc(c.body).replace(/\n/g, "<br>")}</div>`);
@@ -192,11 +249,111 @@ async function loadThreads() {
     el.className = "empty";
     el.textContent = "Could not load conversations.";
   }
-  document.getElementById("lastUpdated").textContent = `updated ${new Date().toLocaleTimeString()}`;
 }
 
-loadThreads();
-setInterval(loadThreads, 30000);
+// ---- Repo status ----
+async function loadRepoDetail(repo) {
+  try {
+    const [issues, prs, runs, jarvisPrs] = await Promise.all([
+      gh(`/repos/${OWNER}/${repo.name}/issues?state=open&per_page=100`).catch(() => []),
+      gh(`/repos/${OWNER}/${repo.name}/pulls?state=open&per_page=100`).catch(() => []),
+      gh(`/repos/${OWNER}/${repo.name}/actions/runs?per_page=1`).catch(() => ({ workflow_runs: [] })),
+      gh(`/search/issues?q=is:pr+repo:${OWNER}/${repo.name}+head:jarvis/`).catch(() => ({ items: [] }))
+    ]);
+    const openIssueCount = Array.isArray(issues) ? issues.filter(i => !i.pull_request).length : "?";
+    const openPrCount = Array.isArray(prs) ? prs.length : "?";
+    const lastRun = runs.workflow_runs && runs.workflow_runs[0];
+    const jarvisPrCount = jarvisPrs.total_count || 0;
+    return { openIssueCount, openPrCount, lastRun, jarvisPrCount };
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+function ciDot(run) {
+  if (!run) return `<span class="dot gray"></span>no CI`;
+  if (run.status !== "completed") return `<span class="dot yellow"></span>running`;
+  if (run.conclusion === "success") return `<span class="dot green"></span>passing`;
+  if (run.conclusion === "failure") return `<span class="dot red"></span>failing`;
+  return `<span class="dot gray"></span>${run.conclusion || "unknown"}`;
+}
+
+async function loadRepos() {
+  const el = document.getElementById("repos");
+  try {
+    const repos = await gh(`/users/${OWNER}/repos?per_page=100&sort=pushed`);
+    const visible = repos.filter(r => !r.fork);
+    document.getElementById("repoCount").textContent = `(${visible.length})`;
+    el.className = "repo-grid";
+    el.innerHTML = visible.map(r => `
+      <div class="repo-card" data-repo="${r.name}">
+        <div class="repo-card-top">
+          <div class="repo-name"><a href="${r.html_url}" target="_blank" onclick="event.stopPropagation()">${esc(r.name)}</a></div>
+          <span class="lang-tag">${esc(r.language || "—")}</span>
+        </div>
+        <div class="repo-stats">
+          <span>pushed ${timeAgo(r.pushed_at)}</span>
+          <span>★ ${r.stargazers_count}</span>
+          ${r.private ? '<span>🔒 private</span>' : ''}
+        </div>
+        <div class="repo-detail" id="detail-${r.name}">Loading details…</div>
+      </div>
+    `).join("");
+
+    document.querySelectorAll(".repo-card").forEach(card => {
+      card.addEventListener("click", async () => {
+        const name = card.dataset.repo;
+        const wasExpanded = card.classList.contains("expanded");
+        document.querySelectorAll(".repo-card").forEach(c => c.classList.remove("expanded"));
+        if (wasExpanded) return;
+        card.classList.add("expanded");
+        const detailEl = document.getElementById(`detail-${name}`);
+        if (detailEl.dataset.loaded) return;
+        const repoObj = visible.find(r => r.name === name);
+        const d = await loadRepoDetail(repoObj);
+        if (d.error) {
+          detailEl.innerHTML = `Could not load details (${esc(d.error)}) — likely private or rate-limited.`;
+        } else {
+          detailEl.innerHTML = `
+            <div class="repo-detail-row"><span>CI status</span><span>${ciDot(d.lastRun)}</span></div>
+            <div class="repo-detail-row"><span>Open issues</span><span>${d.openIssueCount}</span></div>
+            <div class="repo-detail-row"><span>Open PRs</span><span>${d.openPrCount}</span></div>
+            <div class="repo-detail-row"><span>Jarvis PRs (open, all-time search)</span><span>${d.jarvisPrCount}</span></div>
+            <div class="repo-actions">
+              <button class="mini-btn" data-action="scan">🔍 Ask Jarvis to scan this repo</button>
+              <a class="mini-btn" href="https://github.com/${OWNER}/${name}/issues" target="_blank" style="text-decoration:none;display:inline-block">View issues ↗</a>
+            </div>
+          `;
+          detailEl.dataset.loaded = "1";
+          detailEl.querySelector('[data-action="scan"]').addEventListener("click", (e) => {
+            e.stopPropagation();
+            sendMessage(`Scan ${name} for any bugs or broken things and fix what you find.`);
+          });
+        }
+      });
+    });
+
+    // quick chips from top 3 most-recently-pushed repos
+    const chipsEl = document.getElementById("quickChips");
+    chipsEl.innerHTML = visible.slice(0, 3).map(r =>
+      `<span class="chip" data-t="Scan ${esc(r.name)} for any bugs or broken things">Scan ${esc(r.name)}</span>`
+    ).join("");
+    chipsEl.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => sendMessage(chip.dataset.t));
+    });
+  } catch (e) {
+    document.getElementById("error").textContent = `Failed to load repos: ${e.message}`;
+    el.className = "empty";
+    el.textContent = "Could not load repo status.";
+  }
+}
+
+async function refreshAll() {
+  await Promise.all([loadThreads(), loadRepos()]);
+  document.getElementById("lastUpdated").textContent = `updated ${new Date().toLocaleTimeString()}`;
+}
+refreshAll();
+setInterval(refreshAll, 30000);
 </script>
 </body>
 </html>
