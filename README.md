@@ -3,6 +3,10 @@
 This repo is the control panel for **Jarvis**, an autonomous agent that finds and fixes small,
 well-scoped bugs across my GitHub repos and opens PRs for review.
 
+### 🚀 [Launch the Jarvis Dashboard →](https://mansigidugu.github.io/jarvis-control/)
+
+Also linked as this repo's **website** (top-right of the repo page, next to About).
+
 ## How to use it
 
 Open a new issue here using one of the templates:
