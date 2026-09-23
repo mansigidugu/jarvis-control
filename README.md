@@ -9,16 +9,18 @@ Also linked as this repo's **website** (top-right of the repo page, next to Abou
 
 ## How to use it
 
-Open a new issue here using one of the templates:
+Type a message in the dashboard's chat box (e.g. "fix the broken build in coursify" or
+"scan my-portfolio for issues") and hit **Send to Jarvis**. It opens a pre-filled GitHub issue —
+click **Submit new issue** there and you're done.
 
-- **🔍 Scan a repo now** — tell Jarvis to immediately scan `owner/repo` for fixable issues / failing PR checks.
-- **🛠 Fix a specific issue or PR** — point Jarvis at one exact issue/PR number to work on right away.
+A Hermes watcher polls this repo's open issues labeled `jarvis-trigger` every ~10 minutes. When it
+sees a new one (or a new comment from you on an existing conversation), it dispatches Jarvis to
+act, then comments back on the issue with a summary + links to any PR(s) opened. The conversation
+stays open for follow-ups — just comment on the same issue (or reply from the dashboard once that
+lands) and Jarvis will pick it up on its next pass.
 
-A Hermes watcher polls this repo's open issues labeled `jarvis-trigger`. When it sees a new one,
-it dispatches Jarvis to act on it, then:
-
-- Comments on the trigger issue with a summary + links to any PR(s) opened
-- Closes the trigger issue when done
+Prefer raw GitHub? The old structured forms still work too: **🔍 Scan a repo** / **🛠 Fix a
+specific issue or PR** under [New issue](../../issues/new/choose).
 
 ## Standing behavior
 

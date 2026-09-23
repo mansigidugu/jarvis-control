@@ -1,0 +1,13 @@
+name: "💬 Chat with Jarvis"
+description: "Tell Jarvis in plain English what to fix"
+title: "[jarvis-chat] "
+labels: ["jarvis-trigger", "chat"]
+body:
+  - type: textarea
+    id: message
+    attributes:
+      label: Message
+      description: "What do you want Jarvis to do? e.g. \"fix the broken login bug in coursify\" or \"scan my-portfolio for issues\""
+      placeholder: "Fix the typo in the README of coursify"
+    validations:
+      required: true

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jarvis Dashboard</title>
+<title>Jarvis</title>
 <style>
   :root {
     --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9;
@@ -13,33 +13,69 @@
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    padding: 24px; max-width: 900px; margin: 0 auto;
+    padding: 24px; max-width: 760px; margin: 0 auto;
   }
-  header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
   header h1 { font-size: 22px; margin: 0; }
   .badge { font-size: 12px; padding: 3px 8px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
-  .actions { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--accent); color: #0d1117; font-weight: 600;
-    padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 14px;
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .links { display: flex; gap: 14px; margin-bottom: 24px; font-size: 13px; }
+  .links a { color: var(--muted); text-decoration: none; }
+  .links a:hover { color: var(--accent); }
+
+  /* Chat composer */
+  .composer {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; margin-bottom: 28px;
   }
-  .btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
-  section { margin-bottom: 32px; }
-  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-  .item {
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  .composer textarea {
+    width: 100%; min-height: 70px; resize: vertical; background: #0d1117; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px;
+    font-family: inherit; outline: none;
   }
-  .item a { color: var(--text); text-decoration: none; font-weight: 500; }
-  .item a:hover { color: var(--accent); text-decoration: underline; }
-  .meta { color: var(--muted); font-size: 12px; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-  .open { background: var(--yellow); }
-  .done { background: var(--green); }
-  .empty { color: var(--muted); font-size: 14px; padding: 12px; }
-  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 40px; }
-  #error { color: var(--red); font-size: 13px; }
+  .composer textarea:focus { border-color: var(--accent); }
+  .composer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .composer-hint { color: var(--muted); font-size: 12px; }
+  .send-btn {
+    background: var(--accent); color: #0d1117; font-weight: 600; border: none;
+    padding: 9px 18px; border-radius: 6px; font-size: 14px; cursor: pointer;
+  }
+  .send-btn:hover { filter: brightness(1.1); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .chip {
+    background: #0d1117; border: 1px solid var(--border); color: var(--muted);
+    font-size: 12px; padding: 4px 10px; border-radius: 12px; cursor: pointer;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { margin-bottom: 28px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
+
+  /* Conversation threads */
+  .thread {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .thread-head {
+    padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .thread-head a { color: var(--text); text-decoration: none; font-weight: 500; }
+  .thread-head a:hover { color: var(--accent); }
+  .status-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  .status-open { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .status-progress { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .status-done { background: rgba(63,185,80,0.15); color: var(--green); }
+  .msgs { padding: 10px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 88%; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; }
+  .msg.user { align-self: flex-end; background: #1f6feb33; border: 1px solid #1f6feb55; }
+  .msg.jarvis { align-self: flex-start; background: #21262d; border: 1px solid var(--border); }
+  .msg .who { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+  .msg a { color: var(--accent); }
+  .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 36px; }
+  #error { color: var(--red); font-size: 13px; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -47,33 +83,35 @@
   <h1>🤖 Jarvis</h1>
   <span class="badge" id="lastUpdated">loading…</span>
 </header>
+<div class="sub">Your autonomous GitHub fixer. Tell it what to do — it opens PRs, never merges.</div>
+<div class="links">
+  <a href="https://github.com/users/mansigidugu/projects/1" target="_blank">Project board</a>
+  <a href="https://github.com/pulls?q=is%3Apr+author%3Amansigidugu+head%3Ajarvis%2F" target="_blank">All Jarvis PRs</a>
+  <a href="https://github.com/mansigidugu/jarvis-control" target="_blank">Source</a>
+</div>
 
-<div class="actions">
-  <a class="btn" href="https://github.com/mansigidugu/jarvis-control/issues/new?template=scan-repo.yml" target="_blank">🔍 Scan a repo</a>
-  <a class="btn" href="https://github.com/mansigidugu/jarvis-control/issues/new?template=fix-target.yml" target="_blank">🛠 Fix issue/PR</a>
-  <a class="btn secondary" href="https://github.com/users/mansigidugu/projects/1" target="_blank">Project board</a>
-  <a class="btn secondary" href="https://github.com/pulls?q=is%3Apr+author%3Amansigidugu+head%3Ajarvis%2F" target="_blank">All Jarvis PRs</a>
+<div class="composer">
+  <div class="quick-chips">
+    <span class="chip" data-t="Scan my-portfolio for any bugs or broken links">Scan my-portfolio</span>
+    <span class="chip" data-t="Scan coursify for any bugs or broken code">Scan coursify</span>
+    <span class="chip" data-t="Scan ccaf-day1 for any bugs">Scan ccaf-day1</span>
+  </div>
+  <textarea id="msg" placeholder="e.g. &quot;Fix the broken build in coursify&quot; or &quot;scan my-portfolio for issues&quot;"></textarea>
+  <div class="composer-row">
+    <span class="composer-hint">Opens a pre-filled GitHub issue in a new tab — click "Submit new issue" there to send it.</span>
+    <button class="send-btn" id="sendBtn">Send to Jarvis →</button>
+  </div>
 </div>
 
 <div id="error"></div>
 
 <section>
-  <h2>Pending triggers</h2>
-  <div id="pending" class="empty">Loading…</div>
-</section>
-
-<section>
-  <h2>Open PRs from Jarvis</h2>
-  <div id="prs" class="empty">Loading…</div>
-</section>
-
-<section>
-  <h2>Recent trigger history</h2>
-  <div id="history" class="empty">Loading…</div>
+  <h2>Conversations</h2>
+  <div id="threads" class="empty">Loading…</div>
 </section>
 
 <footer>
-  jarvis-control · auto-refreshes on load · <a href="https://github.com/mansigidugu/jarvis-control" style="color:var(--muted)">source</a>
+  jarvis-control · reads refresh automatically · replies happen as comments on the GitHub issue (checked every ~10 min)
 </footer>
 
 <script>
@@ -83,6 +121,7 @@ const api = (path) => fetch(`https://api.github.com/repos/${OWNER}/${REPO}${path
   if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
   return r.json();
 });
+const esc = (s) => (s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const timeAgo = (iso) => {
   const s = Math.floor((Date.now() - new Date(iso)) / 1000);
   if (s < 60) return `${s}s ago`;
@@ -90,59 +129,74 @@ const timeAgo = (iso) => {
   if (s < 86400) return `${Math.floor(s/3600)}h ago`;
   return `${Math.floor(s/86400)}d ago`;
 };
-const esc = (s) => (s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-async function load() {
-  try {
-    const [openTriggers, closedTriggers, prs] = await Promise.all([
-      api(`/issues?labels=jarvis-trigger&state=open&per_page=20`),
-      api(`/issues?labels=jarvis-trigger&state=closed&per_page=15`),
-      fetch(`https://api.github.com/search/issues?q=is:pr+author:${OWNER}+head:jarvis/&sort=created&order=desc&per_page=20`).then(r => r.json())
-    ]);
-
-    // Pending
-    const pendingEl = document.getElementById("pending");
-    if (!openTriggers.length) {
-      pendingEl.className = "empty"; pendingEl.textContent = "No pending triggers.";
-    } else {
-      pendingEl.className = ""; pendingEl.innerHTML = openTriggers.map(i => {
-        const inProgress = i.labels.some(l => l.name === "jarvis-in-progress");
-        return `<div class="item">
-          <div><span class="status-dot open"></span><a href="${i.html_url}" target="_blank">${esc(i.title)}</a>
-            <div class="meta">#${i.number} · opened ${timeAgo(i.created_at)}${inProgress ? " · <b>in progress</b>" : ""}</div></div>
-        </div>`;
-      }).join("");
-    }
-
-    // Open PRs
-    const prsEl = document.getElementById("prs");
-    const items = prs.items || [];
-    if (!items.length) {
-      prsEl.className = "empty"; prsEl.textContent = "No open PRs from Jarvis right now.";
-    } else {
-      prsEl.className = ""; prsEl.innerHTML = items.map(p => `<div class="item">
-          <div><a href="${p.html_url}" target="_blank">${esc(p.title)}</a>
-            <div class="meta">${p.repository_url.split('/').slice(-2).join('/')} · #${p.number} · ${timeAgo(p.created_at)}</div></div>
-        </div>`).join("");
-    }
-
-    // History
-    const histEl = document.getElementById("history");
-    if (!closedTriggers.length) {
-      histEl.className = "empty"; histEl.textContent = "No completed triggers yet.";
-    } else {
-      histEl.className = ""; histEl.innerHTML = closedTriggers.map(i => `<div class="item">
-          <div><span class="status-dot done"></span><a href="${i.html_url}" target="_blank">${esc(i.title)}</a>
-            <div class="meta">#${i.number} · closed ${timeAgo(i.closed_at)}</div></div>
-        </div>`).join("");
-    }
-
-    document.getElementById("lastUpdated").textContent = `updated ${new Date().toLocaleTimeString()}`;
-  } catch (e) {
-    document.getElementById("error").textContent = `Failed to load: ${e.message} (GitHub API rate limits unauthenticated requests to 60/hr per IP)`;
-  }
+function sendMessage(text) {
+  if (!text.trim()) return;
+  const url = `https://github.com/${OWNER}/${REPO}/issues/new?template=chat.yml&title=${encodeURIComponent("[jarvis-chat] " + text.slice(0, 60))}&message=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
 }
-load();
+
+document.getElementById("sendBtn").addEventListener("click", () => {
+  const el = document.getElementById("msg");
+  sendMessage(el.value);
+  el.value = "";
+});
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => sendMessage(chip.dataset.t));
+});
+document.getElementById("msg").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) document.getElementById("sendBtn").click();
+});
+
+async function loadThreads() {
+  const el = document.getElementById("threads");
+  try {
+    const [openChats, closedChats] = await Promise.all([
+      api(`/issues?labels=chat&state=open&per_page=20&sort=updated`),
+      api(`/issues?labels=chat&state=closed&per_page=10&sort=updated`)
+    ]);
+    const all = [...openChats, ...closedChats];
+    if (!all.length) {
+      el.className = "empty";
+      el.textContent = "No conversations yet — send Jarvis a message above.";
+      return;
+    }
+    const withComments = await Promise.all(all.map(async (issue) => {
+      const comments = issue.comments > 0
+        ? await fetch(issue.comments_url).then(r => r.json())
+        : [];
+      return { issue, comments };
+    }));
+
+    el.className = "";
+    el.innerHTML = withComments.map(({ issue, comments }) => {
+      const inProgress = issue.labels.some(l => l.name === "jarvis-in-progress");
+      const done = issue.state === "closed" || issue.labels.some(l => l.name === "jarvis-done");
+      const statusClass = done ? "status-done" : (inProgress ? "status-progress" : "status-open");
+      const statusText = done ? "done" : (inProgress ? "working…" : "queued");
+      const userMsg = issue.body?.replace(/^### Message\s*/i, "").trim() || issue.title;
+      const msgs = [`<div class="msg user"><div class="who">you · ${timeAgo(issue.created_at)}</div>${esc(userMsg)}</div>`];
+      comments.forEach(c => {
+        msgs.push(`<div class="msg jarvis"><div class="who">🤖 jarvis · ${timeAgo(c.created_at)}</div>${esc(c.body).replace(/\n/g, "<br>")}</div>`);
+      });
+      return `<div class="thread">
+        <div class="thread-head">
+          <a href="${issue.html_url}" target="_blank">#${issue.number} on GitHub ↗</a>
+          <span class="status-pill ${statusClass}">${statusText}</span>
+        </div>
+        <div class="msgs">${msgs.join("")}</div>
+      </div>`;
+    }).join("");
+  } catch (e) {
+    document.getElementById("error").textContent = `Failed to load: ${e.message} (GitHub API rate-limits unauthenticated requests to 60/hr per IP)`;
+    el.className = "empty";
+    el.textContent = "Could not load conversations.";
+  }
+  document.getElementById("lastUpdated").textContent = `updated ${new Date().toLocaleTimeString()}`;
+}
+
+loadThreads();
+setInterval(loadThreads, 30000);
 </script>
 </body>
 </html>
