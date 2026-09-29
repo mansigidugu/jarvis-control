@@ -44,7 +44,7 @@
     border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px;
     font-family: inherit; outline: none;
   }
-  .composer textarea:focus { border-color: var(--accent); }
+  .composer textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(88,166,255,0.35); }
   .composer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
   .composer-hint { color: var(--muted); font-size: 12px; }
   .send-btn {
@@ -52,12 +52,20 @@
     padding: 9px 18px; border-radius: 6px; font-size: 14px; cursor: pointer;
   }
   .send-btn:hover { filter: brightness(1.1); }
+  .send-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
   .quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
   .chip {
     background: #0d1117; border: 1px solid var(--border); color: var(--muted);
     font-size: 12px; padding: 4px 10px; border-radius: 12px; cursor: pointer;
   }
   .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
   section { margin-bottom: 28px; }
   h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
@@ -120,6 +128,10 @@
     font-size: 12px; padding: 5px 10px; border-radius: 6px; cursor: pointer;
   }
   .mini-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mini-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
   .lang-tag { font-size: 11px; color: var(--muted); }
 </style>
 </head>
@@ -130,7 +142,7 @@
 </header>
 <div class="sub">Your autonomous GitHub fixer. Tell it what to do — it opens PRs, never merges.</div>
 <div class="links">
-  <a href="https://github.com/users/mansigidugu/projects/1" target="_blank">Project board</a>
+  <a href="https://github.com/mansigidugu/jarvis-control/projects" target="_blank">Project board</a>
   <a href="https://github.com/pulls?q=is%3Apr+author%3Amansigidugu+head%3Ajarvis%2F" target="_blank">All Jarvis PRs</a>
   <a href="https://github.com/mansigidugu/jarvis-control" target="_blank">Source</a>
 </div>
@@ -231,7 +243,7 @@ async function loadThreads() {
       const done = issue.labels.some(l => l.name === "jarvis-done");
       const statusClass = done ? "status-done" : (inProgress ? "status-progress" : "status-open");
       const statusText = done ? "answered" : (inProgress ? "working…" : "queued");
-      const userMsg = issue.body?.replace(/^### Message\s*/i, "").replace(/^###.*Repo to scan\s*/i, "scan: ").trim() || issue.title;
+      const userMsg = issue.body?.replace(/^### Message\s*/i, "").replace(/^### Repo to scan\s*/i, "scan: ").trim() || issue.title;
       const msgs = [`<div class="msg user"><div class="who">you · ${timeAgo(issue.created_at)}</div>${esc(userMsg)}</div>`];
       comments.forEach(c => {
         msgs.push(`<div class="msg jarvis"><div class="who">🤖 jarvis · ${timeAgo(c.created_at)}</div>${esc(c.body).replace(/\n/g, "<br>")}</div>`);
@@ -288,7 +300,7 @@ async function loadRepos() {
     el.innerHTML = visible.map(r => `
       <div class="repo-card" data-repo="${r.name}">
         <div class="repo-card-top">
-          <div class="repo-name"><a href="${r.html_url}" target="_blank" onclick="event.stopPropagation()">${esc(r.name)}</a></div>
+          <div class="repo-name"><a href="${esc(r.html_url)}" target="_blank" onclick="event.stopPropagation()">${esc(r.name)}</a></div>
           <span class="lang-tag">${esc(r.language || "—")}</span>
         </div>
         <div class="repo-stats">
